@@ -2,26 +2,37 @@ import { Avatar } from './Avatar';
 import { Comment } from './Comment';
 import styles from './Post.module.css';
 
-export function Post() {
+import { format, formatDistanceToNow } from 'date-fns';
+
+import ptBR from 'date-fns/locale/pt-BR/';
+
+export function Post( { post }) {
+    const publishedDateFormatted = format(post.publishedAt, "d 'de' LLLL 'às' HH'h'mm", {locale: ptBR});
+    const publishedDateRelativeToNow = formatDistanceToNow(post.publishedAt, {locale: ptBR, addSuffix: true});
+
     return (
         <article className={styles.post}>
             <header>
                 <div className={styles.author}>
-                    <Avatar src="https://github.com/gustavocotalima.png"/>
+                    <Avatar src={post.author.avatarUrl}/>
                     <div className={styles.authorInfo}>
-                        <strong>Gustavo Lima</strong>
-                        <span>@gustavocotalima</span>
+                        <strong>{post.author.name}</strong>
+                        <span>@{post.author.username}</span>
                     </div>
                 </div>
 
-                <time title="27 de Julho às 16h34" dateTime="2022-07-27">Publicado há 1h</time>
+                <time title={publishedDateFormatted} dateTime={post.publishedAt.toISOString()}>{publishedDateRelativeToNow}</time>
             </header>
 
             <div className={styles.content}>
-                <p>Fala galeraa 👋</p>
-                <p>Acabei de subir mais um projeto no meu portifa. É um projeto que fiz no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀</p>
-                <p>👉{' '}<a href='#'>jane.design/doctorcare</a></p>
-                <p><a href='#'>#novoprojeto</a>{' '} <a href='#'>#nlw</a> {' '} <a href='#'>#rocketseat</a></p>
+                { post.content.map((content, index) => {
+                    if (content.type === 'paragraph') {
+                        return <p key={index}>{content.content}</p>
+
+                    } else if (content.type === 'link') {
+                        return <p><a key={index} href={content.content}>{content.content}</a></p>
+                    }
+                })} 
             </div>
 
             <form className={styles.commentForm}>

@@ -5,8 +5,23 @@ import { Sidebar } from './components/Sidebar';
 import './global.css';
 import styles from './App.module.css';
 
+interface Post { 
+    id: number;
+    author: {
+        avatarUrl: string;
+        name: string;
+        username: string;
+    };
+    content: {
+        type: 'paragraph' | 'link';
+        content: string;
+    }[];
+    publishedAt: Date;
+}
 
-const posts = [
+type Posts = Post[];
+
+const posts : Posts = [
   {
     id: 1,
     author: {

@@ -4,10 +4,27 @@ import styles from './Post.module.css';
 
 import { format, formatDistanceToNow } from 'date-fns';
 
-import ptBR from 'date-fns/locale/pt-BR/';
-import { useState } from 'react';
+import ptBR from 'date-fns/locale/pt-BR';
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react';
 
-export function Post( { post }) {
+
+interface PostProps {
+    post: { 
+        id: number;
+        author: {
+            avatarUrl: string;
+            name: string;
+            username: string;
+        };
+        content: {
+            type: string;
+            content: string;
+        }[];
+        publishedAt: Date;
+    }
+}
+
+export function Post( { post }: PostProps) {
     const publishedDateFormatted = format(post.publishedAt, "d 'de' LLLL 'às' HH'h'mm", {locale: ptBR});
     const publishedDateRelativeToNow = formatDistanceToNow(post.publishedAt, {locale: ptBR, addSuffix: true});
 
@@ -15,23 +32,23 @@ export function Post( { post }) {
 
     const [newCommentText, setNewCommentText] = useState('');
 
-    function handleCreateNewComment() {
+    function handleCreateNewComment(event: FormEvent) {
         event.preventDefault();
         setComments([...comments, newCommentText]);
         setNewCommentText('');
     }
 
-    function handleNewCommentChange() {
+    function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
         event.target.setCustomValidity('');
         setNewCommentText(event.target.value);
     }
 
-    function handleNewCommentInvalid() {
+    function handleNewCommentInvalid(event: InvalidEvent<HTMLTextAreaElement>) {
         event.target.setCustomValidity("Comentário inválido");
     }
 
-    function deleteComment(comment) {
-        setComments(comments.filter(c => c !== comment ));
+    function deleteComment(commentToDelete: string) {
+        setComments(comments.filter(c => c !== commentToDelete ));
     }
 
     const isNewCommentEmpty = newCommentText.length===0

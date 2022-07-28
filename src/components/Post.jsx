@@ -77,9 +77,7 @@ export function Post( { post }) {
             </form>
 
             <div className={styles.commentList}>
-                {comments.map(comment => {
-                    return <Comment key={comment} comment={comment}  onDeleteComment={deleteComment} />
-                })}
+                {comments.map(comment => <Comment key={comment} comment={comment}  onDeleteComment={deleteComment} />)}
             </div>
         </article>
     )
